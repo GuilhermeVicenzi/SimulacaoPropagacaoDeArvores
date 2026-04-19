@@ -1,41 +1,48 @@
 package simulacao.modelo;
 
-import java.util.List;
-
 public class Arvore {
     private int idade;
     private boolean madura;
     private boolean viva;
     private float energia;
     private float energiaNecessaria;
-    private float diametro;
-    private float crescimento;
+    private double diametro;
+    private double taxaCrescimento;
+    private double diametroMAX;
+    private double[] centro;
 
     public Arvore(int idade, boolean madura, boolean viva, float energia,
-                  float energiaNecessaria, float diametro, float crescimento) {
+                  float energiaNecessaria, double diametro, double crescimento,
+                  double diametroMAX, double[] centro) {
+        if (centro == null || centro.length != 2) {
+            throw new IllegalArgumentException("O vetor da posição deve conter exatamente 2 números.");
+        }
         this.idade = idade;
         this.madura = madura;
         this.viva = viva;
         this.energia = energia;
         this.energiaNecessaria = energiaNecessaria;
         this.diametro = diametro;
-        this.crescimento = crescimento;
+        this.taxaCrescimento = crescimento;
+        this.diametroMAX = diametroMAX;
+        this.centro = centro;
     }
 
-    public void crescer() {
-        if (!viva) {
+    public void envelhecer() {
+        energia -= energiaNecessaria;
+        if (energia <= 0) {
+            viva = false;
             return;
         }
 
         idade++;
-        energia -= energiaNecessaria;
-        if (energia <= 0) {
-            viva = false;
-        }
-        diametro += crescimento;
         if (!madura && idade >= 10) {
             madura = true;
         }
+    }
+
+    public void crescer(double espacoDisponivel) {
+        diametro += (taxaCrescimento * (1 - diametro / diametroMAX));
     }
 
     public void recebeRecurso(float recurso) {
@@ -95,19 +102,35 @@ public class Arvore {
         this.energiaNecessaria = energiaNecessaria;
     }
 
-    public float getDiametro() {
+    public double getDiametro() {
         return diametro;
     }
 
-    public void setDiametro(float diametro) {
+    public void setDiametro(double diametro) {
         this.diametro = diametro;
     }
 
-    public float getCrescimento() {
-        return crescimento;
+    public double getTaxaCrescimento() {
+        return taxaCrescimento;
     }
 
-    public void setCrescimento(float crescimento) {
-        this.crescimento = crescimento;
+    public void setTaxaCrescimento(double taxaCrescimento) {
+        this.taxaCrescimento = taxaCrescimento;
+    }
+
+    public double getDiametroMAX() {
+        return diametroMAX;
+    }
+
+    public void setDiametroMAX(double diametroMAX) {
+        this.diametroMAX = diametroMAX;
+    }
+
+    public double[] getCentro() {
+        return centro;
+    }
+
+    public void setCentro(double[] centro) {
+        this.centro = centro;
     }
 }

@@ -10,13 +10,13 @@ public class Ambiente {
     List<Arvore> arvores;
     List<Semente> sementes;
 
-    int area;
+    double raio;
     float recurso;
 
-    public Ambiente(List<Arvore> arvores, List<Semente> sementes, int tamanho, float recurso) {
+    public Ambiente(List<Arvore> arvores, List<Semente> sementes, double raio, float recurso) {
         this.arvores = arvores;
         this.sementes = sementes;
-        this.area = tamanho;
+        this.raio = raio;
         this.recurso = recurso;
     }
 
@@ -26,12 +26,43 @@ public class Ambiente {
             if (recurso >= necessario && arvore.isViva()) {
                 recurso -= necessario;
                 arvore.recebeRecurso(necessario); // Passa o recurso pra arvore
-                System.out.println("Recursos restantes: " + recurso);
             }
-            arvore.crescer();
+            arvore.envelhecer();
+
+            double menorEspaco = Double.MAX_VALUE;
+
+            for (Arvore b : arvores) {
+                if (arvore == b) continue;
+
+                double dx = arvore.getCentro()[0] - b.getCentro()[0];
+                double dy = arvore.getCentro()[1] - b.getCentro()[1];
+                double dist = Math.sqrt(dx*dx + dy*dy);
+
+                double raioA = arvore.getDiametro() / 2;
+                double raioB = b.getDiametro() / 2;
+
+                double espaco = dist - raioA - raioB;
+                menorEspaco = Math.min(espaco, menorEspaco);
+            }
+
+            double espacoBorda = calcularEspacoBorda(arvore);
+            menorEspaco = Math.min(menorEspaco, espacoBorda);
+
+            if (menorEspaco > 0) {
+                arvore.crescer(menorEspaco);
+            }
+
             System.out.println(arvore);
-            System.out.println("RECURSOS RESTANTES: " + recurso);
+            System.out.println("----");
+            System.out.println("Arvore: " + arvore.hashCode());
+            System.out.println("Centro: (" + arvore.getCentro()[0] + ", " + arvore.getCentro()[1] + ")");
+            System.out.println("Raio e Diametro: " + (arvore.getDiametro() /2 ) + " " + arvore.getDiametro());
+            System.out.println("Menor espaço: " + menorEspaco);
+            System.out.println("----");
         }
+
+
+        System.out.println("Recursos restantes: " + recurso);
 
         List<Arvore> novas = new ArrayList<>();
         List<Semente> remover = new ArrayList<>();
@@ -46,6 +77,14 @@ public class Ambiente {
 
         sementes.removeAll(remover);
         arvores.addAll(novas);
+    }
+
+    public double calcularEspacoBorda(Arvore a) {
+        double dx = - a.getCentro()[0];
+        double dy = - a.getCentro()[1];
+
+        double distCentro = Math.sqrt(dx*dx + dy*dy);
+        return raio - (distCentro + (a.getDiametro() / 2));
     }
 
     public List<Arvore> getArvores() {
@@ -64,15 +103,15 @@ public class Ambiente {
         this.sementes = sementes;
     }
 
-    public int getArea() {
-        return area;
+    public double getArea() {
+        return raio;
     }
 
-    public void setArea(int area) {
+    public void setArea(double area) {
         if (area < 0) {
-            System.out.println("Area negativa, não modificado");
+            System.out.println("Raio negativo, não modificado");
         }
-        this.area = area;
+        this.raio = area;
     }
 
     public float getRecurso() {
