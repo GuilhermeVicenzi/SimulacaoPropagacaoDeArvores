@@ -29,10 +29,13 @@ public class Main {
         arvores.add(a4);
 
         List<Semente> sementes = new ArrayList<>();
+        Semente s = new Semente(0.5F, 5, a1);
+        s.setPosicaoQueda(new double[]{0, 0});
+        sementes.add(s);
 
         Ambiente ambiente = new Ambiente(arvores, sementes, 20, 10000F);
 
         Simulador sim = new Simulador(ambiente);
-        sim.executar(101); // Os raios devem ficar próximos de 7.1, 7.2
+        sim.executar(25); // Os raios devem ficar próximos de 7.1, 7.2
     }
 }

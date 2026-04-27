@@ -1,9 +1,9 @@
 package simulacao.modelo;
 
 public class Semente {
-    float chanceGerminar;
-    int tempoGerminar;
-    Arvore arvorePai;
+    private float chanceGerminar;
+    private int tempoGerminar;
+    private Arvore arvorePai;
     private double[] posicaoQueda;
 
     public Semente(float chanceGerminar, int tempoGerminar, Arvore arvore) {
@@ -51,4 +51,35 @@ public class Semente {
         return novoCentro;
     }
 
+    public float getChanceGerminar() {
+        return chanceGerminar;
+    }
+
+    public void setChanceGerminar(float chanceGerminar) {
+        this.chanceGerminar = chanceGerminar;
+    }
+
+    public int getTempoGerminar() {
+        return tempoGerminar;
+    }
+
+    public void setTempoGerminar(int tempoGerminar) {
+        this.tempoGerminar = tempoGerminar;
+    }
+
+    public Arvore getArvorePai() {
+        return arvorePai;
+    }
+
+    public void setArvorePai(Arvore arvorePai) {
+        this.arvorePai = arvorePai;
+    }
+
+    public double[] getPosicaoQueda() {
+        return posicaoQueda;
+    }
+
+    public void setPosicaoQueda(double[] posicaoQueda) {
+        this.posicaoQueda = posicaoQueda;
+    }
 }

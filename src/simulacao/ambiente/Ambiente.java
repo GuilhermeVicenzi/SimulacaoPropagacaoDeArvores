@@ -103,15 +103,15 @@ public class Ambiente {
         this.sementes = sementes;
     }
 
-    public double getArea() {
+    public double getRaio() {
         return raio;
     }
 
-    public void setArea(double area) {
-        if (area < 0) {
+    public void setRaio(double raio) {
+        if (raio < 0) {
             System.out.println("Raio negativo, não modificado");
         }
-        this.raio = area;
+        this.raio = raio;
     }
 
     public float getRecurso() {
