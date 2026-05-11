@@ -31,6 +31,18 @@ public class PainelFloresta extends JPanel{
 
         int raioTela = (int)(ambiente.getRaio() * escala);
 
+        g2.setFont(new Font("Arial", Font.PLAIN, 16));
+        String areaTotal = String.format("Área total: %.2f", ambiente.getArea());
+        String areaOcupada = String.format("Área ocupada: %.2f", ambiente.getAreaUsada());
+        String areaLivre = String.format("Área livre: %.2f", ambiente.getAreaLivre());
+        String quantidadeArvores = "Número de Árvores: " + ambiente.getArvores().size();
+        String quantidadeSementes = "Número de Sementes: " + ambiente.getSementes().size();
+        g2.drawString(areaTotal, 50, 110);
+        g2.drawString(areaOcupada, 50, 130);
+        g2.drawString(areaLivre, 50, 150);
+        g2.drawString(quantidadeArvores, 50, 170);
+        g2.drawString(quantidadeSementes, 50, 190);
+
         g2.setColor(Color.BLACK);
         g2.drawOval(
                 centroTelaX - raioTela,
@@ -63,7 +75,7 @@ public class PainelFloresta extends JPanel{
         for (Semente s : ambiente.getSementes()) {
 
             int x = centroTelaX + (int)(s.getPosicaoQueda()[0] * escala);
-            int y = centroTelaY - (int)(s.getPosicaoQueda()[1] * escala);
+            int y = centroTelaY + (int)(s.getPosicaoQueda()[1] * escala);
 
 
             int tamanho = (int)escala / 2;

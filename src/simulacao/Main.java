@@ -33,9 +33,9 @@ public class Main {
         s.setPosicaoQueda(new double[]{0, 0});
         sementes.add(s);
 
-        Ambiente ambiente = new Ambiente(arvores, sementes, 20, 10000F);
+        Ambiente ambiente = new Ambiente(arvores, sementes, 50, 999999);
 
         Simulador sim = new Simulador(ambiente);
-        sim.executar(25); // Os raios devem ficar próximos de 7.1, 7.2
+        sim.executar(100); // Os raios devem ficar próximos de 7.1, 7.2
     }
 }

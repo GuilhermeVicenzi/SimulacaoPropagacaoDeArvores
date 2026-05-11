@@ -1,15 +1,19 @@
 package simulacao.modelo;
 
+import simulacao.ambiente.Ambiente;
+
 public class Arvore {
     private int idade;
     private boolean madura;
     private boolean viva;
     private float energia;
     private float energiaNecessaria;
+    private float energiaUsadaVida;
     private double diametro;
     private double taxaCrescimento;
     private double diametroMAX;
     private double[] centro;
+    private int tempoDecompor;
 
     public Arvore(int idade, boolean madura, boolean viva, float energia,
                   float energiaNecessaria, double diametro, double crescimento,
@@ -26,6 +30,8 @@ public class Arvore {
         this.taxaCrescimento = crescimento;
         this.diametroMAX = diametroMAX;
         this.centro = centro;
+        this.tempoDecompor = 5;
+        this.energiaUsadaVida = energia;
     }
 
     public void envelhecer() {
@@ -45,8 +51,26 @@ public class Arvore {
         diametro += (taxaCrescimento * (1 - diametro / diametroMAX));
     }
 
+    public void decompor() {
+        if (tempoDecompor > 0) {
+            diametro /= 2;
+            this.tempoDecompor--;
+        } else {
+            diametro = 0;
+            System.out.println("Tempo de decomposição acabou, a árvore deve ser removida.");
+        }
+    }
+
+
     public void recebeRecurso(float recurso) {
         energia += recurso;
+        energiaUsadaVida += recurso;
+    }
+
+    public void liberaRecurso(Ambiente ambiente) {
+        if (tempoDecompor > 0) {
+        ambiente.adicionarRecurso(energiaUsadaVida / (2 * tempoDecompor));
+        }
     }
 
     @Override
@@ -60,6 +84,14 @@ public class Arvore {
         }
 
         return string;
+    }
+
+    public boolean decomposta() {
+        return tempoDecompor <= 0;
+    }
+
+    public double getAreaOcupada() {
+        return (diametro / 2) * (diametro / 2) * 3.14;
     }
 
     public int getIdade() {

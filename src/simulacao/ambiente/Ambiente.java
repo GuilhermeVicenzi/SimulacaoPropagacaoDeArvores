@@ -5,6 +5,7 @@ import simulacao.modelo.Semente;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Ambiente {
     List<Arvore> arvores;
@@ -21,6 +22,7 @@ public class Ambiente {
     }
 
     public void simularPassos() {
+        List<Arvore> decompostas = new ArrayList<>();
         for (Arvore arvore: arvores) {
             float necessario = arvore.getEnergiaNecessaria();
             if (recurso >= necessario && arvore.isViva()) {
@@ -28,6 +30,17 @@ public class Ambiente {
                 arvore.recebeRecurso(necessario); // Passa o recurso pra arvore
             }
             arvore.envelhecer();
+
+            if (arvore.decomposta()) {
+                decompostas.add(arvore);
+                continue;
+            }
+
+            if (!arvore.isViva()) {
+                arvore.decompor();
+                arvore.liberaRecurso(this);
+                continue;
+            }
 
             double menorEspaco = Double.MAX_VALUE;
 
@@ -52,6 +65,11 @@ public class Ambiente {
                 arvore.crescer(menorEspaco);
             }
 
+            Random r = new Random();
+            if (arvore.getIdade() >= 5 && r.nextDouble() < 0.3) {
+                tentarDispersarSemente(arvore);
+            }
+
             System.out.println(arvore);
             System.out.println("----");
             System.out.println("Arvore: " + arvore.hashCode());
@@ -61,6 +79,7 @@ public class Ambiente {
             System.out.println("----");
         }
 
+        arvores.removeAll(decompostas);
 
         System.out.println("Recursos restantes: " + recurso);
 
@@ -85,6 +104,81 @@ public class Ambiente {
 
         double distCentro = Math.sqrt(dx*dx + dy*dy);
         return raio - (distCentro + (a.getDiametro() / 2));
+    }
+
+    public boolean posicaoValida(double[] posicao, double raioNovaArvore) {
+
+        double x = posicao[0];
+        double y = posicao[1];
+
+
+        double distanciaCentro = Math.sqrt(x*x + y*y);
+        if (distanciaCentro + raioNovaArvore > raio) {
+            return false;
+        }
+
+        for (Arvore arvore : arvores) {
+
+            double dx = x - arvore.getCentro()[0];
+            double dy = y - arvore.getCentro()[1];
+
+            double distancia = Math.sqrt(dx * dx + dy * dy);
+
+            if (distancia < (arvore.getDiametro() / 2) + raioNovaArvore) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public void tentarDispersarSemente(Arvore mae) {
+
+        Random r = new Random();
+        int maxTentativas = 5;
+        double alcanceMaximo = 25;
+
+        for (int i = 0; i < maxTentativas; i++) {
+            double angulo = r.nextDouble() * Math.PI * 2;
+            double distancia = r.nextDouble() * r.nextDouble() * alcanceMaximo;
+            double x = mae.getCentro()[0] + Math.cos(angulo) * distancia;
+            double y = mae.getCentro()[1] + Math.sin(angulo) * distancia;
+            double[] posicao = {x, y};
+            double raioNovaArvore = 0.1;
+
+            if (posicaoValida(posicao, raioNovaArvore)) {
+                Semente s = new Semente(0.5F, 5, mae);
+                s.setPosicaoQueda(posicao);
+
+                sementes.add(s);
+                return;
+            }
+        }
+    }
+
+    public void adicionarRecurso(float adicionar) {
+        this.recurso += adicionar;
+    }
+
+    public double getArea() {
+        return raio * raio * 3.14;
+    }
+
+    public double getAreaUsada() {
+        double total = 0;
+        for (Arvore a : arvores) {
+            total += a.getAreaOcupada();
+        }
+        return total;
+    }
+
+    public double getAreaLivre() {
+        double total = getArea();
+
+        for (Arvore a : arvores) {
+            total -= a.getAreaOcupada();
+        }
+        return total;
     }
 
     public List<Arvore> getArvores() {
