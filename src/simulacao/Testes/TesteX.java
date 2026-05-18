@@ -38,6 +38,7 @@ public class TesteX {
 
         Ambiente ambiente = new Ambiente(new ArrayList<Arvore>(), sementes, 40, 999999);
         Simulador simulador = new Simulador(ambiente);
-        simulador.executar(100);
+        simulador.executar(50);
+
     }
 }

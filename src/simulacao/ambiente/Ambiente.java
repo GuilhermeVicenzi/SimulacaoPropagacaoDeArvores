@@ -87,6 +87,18 @@ public class Ambiente {
         List<Semente> remover = new ArrayList<>();
 
         for (Semente semente : sementes) {
+
+            double[] posicao = semente.getPosicaoQueda();
+            double raioNovaArvore = 0.3;
+
+            if (!posicaoValida(posicao, raioNovaArvore)) {
+                remover.add(semente);
+                recurso += 2;
+                System.out.println("Posição ficou inválida devido ao crescimento de outras árvores, semente absorvida");
+                continue;
+            }
+
+
             if (semente.tentarGerminar()) {
                 novas.add(semente.germinar());
                 remover.add(semente);
