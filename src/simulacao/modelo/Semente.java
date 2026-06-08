@@ -1,5 +1,7 @@
 package simulacao.modelo;
 
+import java.util.Random;
+
 public class Semente {
     private float chanceGerminar;
     private int tempoGerminar;
@@ -13,10 +15,10 @@ public class Semente {
         posicaoQueda = calcularQueda();
     }
 
-    public boolean tentarGerminar() {
+    public boolean tentarGerminar(Random random) {
         tempoGerminar--;
         if (tempoGerminar <= 0) {
-            return Math.random() < chanceGerminar;
+            return random.nextDouble() < chanceGerminar;
         }
         return false;
     }

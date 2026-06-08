@@ -3,6 +3,7 @@ package simulacao;
 import simulacao.ambiente.Ambiente;
 import simulacao.modelo.Arvore;
 import simulacao.modelo.Semente;
+import simulacao.simulador.Simulacao;
 import simulacao.simulador.Simulador;
 
 import java.util.ArrayList;
@@ -33,9 +34,10 @@ public class Main {
         s.setPosicaoQueda(new double[]{0, 0});
         sementes.add(s);
 
-        Ambiente ambiente = new Ambiente(arvores, sementes, 50, 999999);
+        Simulacao simulacao = new Simulacao(20.0, 0.5, 35, 1234);
+        Ambiente ambiente = new Ambiente(arvores, sementes, 50, 999999, simulacao);
 
-        Simulador sim = new Simulador(ambiente);
+        Simulador sim = new Simulador(ambiente, simulacao);
         sim.executar(100); // Os raios devem ficar próximos de 7.1, 7.2
     }
 }

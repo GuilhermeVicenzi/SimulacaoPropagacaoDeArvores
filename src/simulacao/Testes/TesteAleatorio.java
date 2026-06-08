@@ -3,6 +3,7 @@ package simulacao.Testes;
 import simulacao.ambiente.Ambiente;
 import simulacao.modelo.Arvore;
 import simulacao.modelo.Semente;
+import simulacao.simulador.Simulacao;
 import simulacao.simulador.Simulador;
 
 import java.util.ArrayList;
@@ -32,8 +33,10 @@ public class TesteAleatorio {
             sementes.add(s);
         }
 
-        Ambiente ambiente = new Ambiente(new ArrayList<Arvore>(), sementes, 40, 9999);
-        Simulador simulador = new Simulador(ambiente);
+        Simulacao simulacao = new Simulacao(20.0, 0.5, 35, 1234);
+
+        Ambiente ambiente = new Ambiente(new ArrayList<Arvore>(), sementes, 40, 9999, simulacao);
+        Simulador simulador = new Simulador(ambiente, simulacao);
         simulador.executar(100);
     }
 }

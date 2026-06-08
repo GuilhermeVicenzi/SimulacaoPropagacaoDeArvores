@@ -12,17 +12,19 @@ public class Simulador {
     Ambiente ambiente;
     Janela janela;
     PainelGrafico painelGrafico;
+    Simulacao simulacao;
 
     private int passoAtual = 0;
     private int maxPassos;
 
     private List<EstatisticasIteracao> historico;
 
-    public Simulador(Ambiente ambiente) {
+    public Simulador(Ambiente ambiente, Simulacao simulacao) {
         this.ambiente = ambiente;
         this.janela = new Janela(ambiente);
         this.historico = new ArrayList<EstatisticasIteracao>();
         this.painelGrafico = new PainelGrafico(this);
+        this.simulacao = simulacao;
     }
 
     public void executar(int passos) {

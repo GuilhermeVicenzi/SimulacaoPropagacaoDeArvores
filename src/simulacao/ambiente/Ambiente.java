@@ -2,23 +2,27 @@ package simulacao.ambiente;
 
 import simulacao.modelo.Arvore;
 import simulacao.modelo.Semente;
+import simulacao.simulador.Simulacao;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class Ambiente {
-    List<Arvore> arvores;
-    List<Semente> sementes;
+    private List<Arvore> arvores;
+    private List<Semente> sementes;
 
-    double raio;
-    float recurso;
+    private double raio;
+    private float recurso;
 
-    public Ambiente(List<Arvore> arvores, List<Semente> sementes, double raio, float recurso) {
+    private Simulacao simulacao;
+
+    public Ambiente(List<Arvore> arvores, List<Semente> sementes, double raio, float recurso, Simulacao simulacao) {
         this.arvores = arvores;
         this.sementes = sementes;
         this.raio = raio;
         this.recurso = recurso;
+        this.simulacao = simulacao;
     }
 
     public void simularPassos() {
@@ -30,6 +34,10 @@ public class Ambiente {
                 arvore.recebeRecurso(necessario); // Passa o recurso pra arvore
             }
             arvore.envelhecer();
+
+            if (arvore.getIdade() >= simulacao.getIdadeMax()) {
+                arvore.setViva(false);
+            }
 
             if (arvore.decomposta()) {
                 decompostas.add(arvore);
@@ -55,17 +63,19 @@ public class Ambiente {
                 double raioB = b.getDiametro() / 2;
 
                 double espaco = dist - raioA - raioB;
+
                 menorEspaco = Math.min(espaco, menorEspaco);
+
             }
 
             double espacoBorda = calcularEspacoBorda(arvore);
             menorEspaco = Math.min(menorEspaco, espacoBorda);
 
-            if (menorEspaco > 0) {
+            if (menorEspaco > simulacao.getDistanciaMin() && arvore.getDiametro() < simulacao.getDiametroMax()) {
                 arvore.crescer(menorEspaco);
             }
 
-            Random r = new Random();
+            Random r = simulacao.getSeed();
             if (arvore.getIdade() >= 5 && r.nextDouble() < 0.3) {
                 tentarDispersarSemente(arvore);
             }
@@ -99,7 +109,7 @@ public class Ambiente {
             }
 
 
-            if (semente.tentarGerminar()) {
+            if (semente.tentarGerminar(simulacao.getSeed())) {
                 novas.add(semente.germinar());
                 remover.add(semente);
                 System.out.println("Uma semente germinou, uma nova arvore comecará a crescer.");
@@ -146,7 +156,7 @@ public class Ambiente {
 
     public void tentarDispersarSemente(Arvore mae) {
 
-        Random r = new Random();
+        Random r = simulacao.getSeed();
         int maxTentativas = 5;
         double alcanceMaximo = 25;
 
