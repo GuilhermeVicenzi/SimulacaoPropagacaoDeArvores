@@ -17,12 +17,12 @@ public class Ambiente {
 
     private Simulacao simulacao;
 
-    public Ambiente(List<Arvore> arvores, List<Semente> sementes, double raio, float recurso, Simulacao simulacao) {
+    public Ambiente(List<Arvore> arvores, List<Semente> sementes, double raio, Simulacao simulacao) {
         this.arvores = arvores;
         this.sementes = sementes;
         this.raio = raio;
-        this.recurso = recurso;
         this.simulacao = simulacao;
+        this.recurso = simulacao.getRecursoInicial();
     }
 
     public void simularPassos() {
@@ -66,17 +66,22 @@ public class Ambiente {
 
                 menorEspaco = Math.min(espaco, menorEspaco);
 
+                if (menorEspaco < 0) {
+                    System.out.println("COLISÃO!");
+                    System.out.println(arvore.hashCode());
+                    System.out.println(b.hashCode());
+                    System.out.println("Espaço: " + espaco);
+                }
             }
 
             double espacoBorda = calcularEspacoBorda(arvore);
             menorEspaco = Math.min(menorEspaco, espacoBorda);
-
             if (menorEspaco > simulacao.getDistanciaMin() && arvore.getDiametro() < simulacao.getDiametroMax()) {
                 arvore.crescer(menorEspaco);
             }
 
             Random r = simulacao.getSeed();
-            if (arvore.getIdade() >= 5 && r.nextDouble() < 0.3) {
+            if (arvore.getIdade() >= 5 && r.nextDouble() < arvore.getDiametro() / simulacao.getDiametroMax() * 0.3) {
                 tentarDispersarSemente(arvore);
             }
 
@@ -103,16 +108,21 @@ public class Ambiente {
 
             if (!posicaoValida(posicao, raioNovaArvore)) {
                 remover.add(semente);
-                recurso += 2;
-                System.out.println("Posição ficou inválida devido ao crescimento de outras árvores, semente absorvida");
+                recurso += 0.5F;
+//                System.out.println("Posição ficou inválida devido ao crescimento de outras árvores, semente absorvida");
                 continue;
             }
 
+            if (semente.getIdade() > simulacao.getValidadeSemente()) {
+                remover.add(semente);
+                recurso += 0.5F;
+                continue;
+            }
 
             if (semente.tentarGerminar(simulacao.getSeed())) {
                 novas.add(semente.germinar());
                 remover.add(semente);
-                System.out.println("Uma semente germinou, uma nova arvore comecará a crescer.");
+//                System.out.println("Uma semente germinou, uma nova arvore comecará a crescer.");
             }
         }
 
@@ -159,6 +169,7 @@ public class Ambiente {
         Random r = simulacao.getSeed();
         int maxTentativas = 5;
         double alcanceMaximo = 25;
+        float custo = 0.5F;
 
         for (int i = 0; i < maxTentativas; i++) {
             double angulo = r.nextDouble() * Math.PI * 2;
@@ -169,10 +180,11 @@ public class Ambiente {
             double raioNovaArvore = 0.1;
 
             if (posicaoValida(posicao, raioNovaArvore)) {
-                Semente s = new Semente(0.5F, 5, mae);
+                Semente s = new Semente(0.5F, mae);
                 s.setPosicaoQueda(posicao);
 
                 sementes.add(s);
+                recurso -= custo;
                 return;
             }
         }
@@ -236,5 +248,13 @@ public class Ambiente {
 
     public void setRecurso(float recurso) {
         this.recurso = recurso;
+    }
+
+    public Simulacao getSimulacao() {
+        return simulacao;
+    }
+
+    public void setSimulacao(Simulacao simulacao) {
+        this.simulacao = simulacao;
     }
 }

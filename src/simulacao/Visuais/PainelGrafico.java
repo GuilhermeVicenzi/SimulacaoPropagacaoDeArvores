@@ -10,42 +10,34 @@ import simulacao.simulador.Simulador;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class PainelGrafico extends JFrame {
 
-    private Simulador simulador;
+    private List<Simulador> simuladores;
 
-    private XYSeries serieArvores;
-    private XYSeries serieSementes;
     private XYSeriesCollection dataset;
-
-    private XYSeries serieEficiencia;
     private XYSeriesCollection datasetEficiencia;
 
-    public PainelGrafico(Simulador simulador) {
+    public PainelGrafico(List<Simulador> simuladores) {
 
-        this.simulador = simulador;
+        this.simuladores = simuladores;
 
         setTitle("Gráficos");
         setSize(1000, 800);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         setLayout(new GridLayout(2, 1));
 
         add(criarGraficoPopulacao());
         add(criarGraficoEficiencia());
 
-
         setVisible(true);
     }
 
     private ChartPanel criarGraficoPopulacao() {
 
-        serieArvores = new XYSeries("Árvores");
-        serieSementes = new XYSeries("Sementes");
-
         dataset = new XYSeriesCollection();
-        dataset.addSeries(serieArvores);
-        dataset.addSeries(serieSementes);
 
         JFreeChart grafico = ChartFactory.createXYLineChart(
                 "Crescimento da Floresta",
@@ -59,10 +51,7 @@ public class PainelGrafico extends JFrame {
 
     private ChartPanel criarGraficoEficiencia() {
 
-        serieEficiencia = new XYSeries("Eficiência Espacial");
-
         datasetEficiencia = new XYSeriesCollection();
-        datasetEficiencia.addSeries(serieEficiencia);
 
         JFreeChart grafico = ChartFactory.createXYLineChart(
                 "Eficiência da Floresta",
@@ -76,38 +65,71 @@ public class PainelGrafico extends JFrame {
 
     public void atualizarGraficos() {
 
-        serieArvores.clear();
-        serieSementes.clear();
+        atualizarPopulacao();
+        atualizarEficiencia();
+    }
 
-        for (EstatisticasIteracao e : simulador.getHistorico()) {
+    private void atualizarPopulacao() {
 
-            serieArvores.add(
-                    e.getIteracao(),
-                    e.getQuantidadeArvores()
-            );
+        dataset.removeAllSeries();
 
-            serieSementes.add(
-                    e.getIteracao(),
-                    e.getQuantidadeSementes()
-            );
-        }
+        for (int i = 0; i < simuladores.size(); i++) {
 
-        serieEficiencia.clear();
+            Simulador simulador = simuladores.get(i);
 
-        for (EstatisticasIteracao e : simulador.getHistorico()) {
+            XYSeries serieArvores =
+                    new XYSeries(
+                            simulador.getNome() + " - Árvores");
 
-            if (e.getQuantidadeArvores() > 0) {
+            XYSeries serieSementes =
+                    new XYSeries(
+                            simulador.getNome() + " - Sementes");
 
-                double eficiencia =
-                        e.getAreaOcupada() /
-                                e.getQuantidadeArvores();
+            for (EstatisticasIteracao e : simulador.getHistorico()) {
 
-                serieEficiencia.add(
+                serieArvores.add(
                         e.getIteracao(),
-                        eficiencia
+                        e.getQuantidadeArvores()
+                );
+
+                serieSementes.add(
+                        e.getIteracao(),
+                        e.getQuantidadeSementes()
                 );
             }
-        }
 
+            dataset.addSeries(serieArvores);
+            dataset.addSeries(serieSementes);
+        }
+    }
+
+    private void atualizarEficiencia() {
+
+        datasetEficiencia.removeAllSeries();
+
+        for (int i = 0; i < simuladores.size(); i++) {
+
+            Simulador simulador = simuladores.get(i);
+
+            XYSeries serieEficiencia =
+                    new XYSeries(
+                            simulador.getNome());
+            for (EstatisticasIteracao e : simulador.getHistorico()) {
+
+                if (e.getQuantidadeArvores() > 0) {
+
+                    double eficiencia =
+                            e.getAreaOcupada() /
+                                    e.getQuantidadeArvores();
+
+                    serieEficiencia.add(
+                            e.getIteracao(),
+                            eficiencia
+                    );
+                }
+            }
+
+            datasetEficiencia.addSeries(serieEficiencia);
+        }
     }
 }

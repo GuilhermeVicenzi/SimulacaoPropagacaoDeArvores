@@ -4,23 +4,20 @@ import java.util.Random;
 
 public class Semente {
     private float chanceGerminar;
-    private int tempoGerminar;
     private Arvore arvorePai;
     private double[] posicaoQueda;
+    private int idade;
 
-    public Semente(float chanceGerminar, int tempoGerminar, Arvore arvore) {
+    public Semente(float chanceGerminar, Arvore arvore) {
         this.chanceGerminar = chanceGerminar;
-        this.tempoGerminar = tempoGerminar;
         this.arvorePai = arvore;
-        posicaoQueda = calcularQueda();
+        this.posicaoQueda = new double[0];
+        this.idade = 0;
     }
 
     public boolean tentarGerminar(Random random) {
-        tempoGerminar--;
-        if (tempoGerminar <= 0) {
-            return random.nextDouble() < chanceGerminar;
-        }
-        return false;
+        idade++;
+        return random.nextDouble() < chanceGerminar;
     }
 
     public Arvore germinar() {
@@ -61,14 +58,6 @@ public class Semente {
         this.chanceGerminar = chanceGerminar;
     }
 
-    public int getTempoGerminar() {
-        return tempoGerminar;
-    }
-
-    public void setTempoGerminar(int tempoGerminar) {
-        this.tempoGerminar = tempoGerminar;
-    }
-
     public Arvore getArvorePai() {
         return arvorePai;
     }
@@ -83,5 +72,13 @@ public class Semente {
 
     public void setPosicaoQueda(double[] posicaoQueda) {
         this.posicaoQueda = posicaoQueda;
+    }
+
+    public int getIdade() {
+        return idade;
+    }
+
+    public void setIdade(int idade) {
+        this.idade = idade;
     }
 }

@@ -16,15 +16,17 @@ public class Simulador {
 
     private int passoAtual = 0;
     private int maxPassos;
+    private String nome;
 
     private List<EstatisticasIteracao> historico;
 
-    public Simulador(Ambiente ambiente, Simulacao simulacao) {
+    public Simulador(Ambiente ambiente, Simulacao simulacao, String nome) {
         this.ambiente = ambiente;
         this.janela = new Janela(ambiente);
         this.historico = new ArrayList<EstatisticasIteracao>();
-        this.painelGrafico = new PainelGrafico(this);
+        this.painelGrafico = null;
         this.simulacao = simulacao;
+        this.nome = nome;
     }
 
     public void executar(int passos) {
@@ -42,7 +44,9 @@ public class Simulador {
 
             ambiente.simularPassos();
 
-            painelGrafico.atualizarGraficos();
+            if (painelGrafico != null) {
+                painelGrafico.atualizarGraficos();
+            }
             janela.atualizar();
 
             registrarEstatisticas();
@@ -75,5 +79,21 @@ public class Simulador {
 
     public List<EstatisticasIteracao> getHistorico() {
         return historico;
+    }
+
+    public PainelGrafico getPainelGrafico() {
+        return painelGrafico;
+    }
+
+    public void setPainelGrafico(PainelGrafico painelGrafico) {
+        this.painelGrafico = painelGrafico;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 }

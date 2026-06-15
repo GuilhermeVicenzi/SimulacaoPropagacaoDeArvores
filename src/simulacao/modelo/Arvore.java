@@ -48,7 +48,12 @@ public class Arvore {
     }
 
     public void crescer(double espacoDisponivel) {
-        diametro += (taxaCrescimento * (1 - diametro / diametroMAX));
+
+        double crescimento =
+                taxaCrescimento * (1 - diametro / diametroMAX);
+
+        crescimento = Math.min(crescimento, espacoDisponivel);
+        diametro += crescimento;
     }
 
     public void decompor() {
