@@ -1,21 +1,31 @@
-package simulacao;
-
+import org.hibernate.Session;
 import simulacao.Visuais.PainelGrafico;
 import simulacao.ambiente.Ambiente;
 import simulacao.disposicao.Disposicao;
+import simulacao.entrada.LeitorEntrada;
 import simulacao.modelo.Arvore;
 import simulacao.modelo.Semente;
+import simulacao.persistencia.HibernateUtil;
+import simulacao.persistencia.SimulacaoRepository;
 import simulacao.simulador.Simulacao;
 import simulacao.simulador.Simulador;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
 
-        Simulacao simulacao =
-                new Simulacao(20.0, 0.5, 35, 1234, 25000, 20);
+
+        List<Simulacao> simulacoes = new ArrayList<Simulacao>();
+        try {
+            simulacoes = LeitorEntrada.lerSimulacoes("src/entrada.csv");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Simulacao simulacao = simulacoes.get(0);
 
         Arvore arvoreBase = new Arvore(
                 0,
@@ -94,6 +104,11 @@ public class Main {
         Simulador simulador4 = new Simulador(ambiente4, simulacao, "Aleatorio");
         Simulador simulador5 = new Simulador(ambiente5, simulacao, "Clusters");
 
+        simulacao.adicionarSimulador(simulador1);
+        simulacao.adicionarSimulador(simulador2);
+        simulacao.adicionarSimulador(simulador3);
+        simulacao.adicionarSimulador(simulador4);
+        simulacao.adicionarSimulador(simulador5);
 
         simulador1.executar(100);
         simulador2.executar(100);
@@ -111,5 +126,14 @@ public class Main {
         simulador4.setPainelGrafico(grafico);
         simulador5.setPainelGrafico(grafico);
 
+        SimulacaoRepository simulacaoRepository = new SimulacaoRepository();
+        Session session =
+                HibernateUtil.getSessionFactory()
+                        .openSession();
+
+        System.out.println("Conectado!");
+        simulacaoRepository.salvar(simulacao);
+
+        session.close();
     }
 }

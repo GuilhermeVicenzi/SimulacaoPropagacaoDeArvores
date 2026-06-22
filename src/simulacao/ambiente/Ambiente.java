@@ -66,12 +66,6 @@ public class Ambiente {
 
                 menorEspaco = Math.min(espaco, menorEspaco);
 
-                if (menorEspaco < 0) {
-                    System.out.println("COLISÃO!");
-                    System.out.println(arvore.hashCode());
-                    System.out.println(b.hashCode());
-                    System.out.println("Espaço: " + espaco);
-                }
             }
 
             double espacoBorda = calcularEspacoBorda(arvore);
@@ -85,18 +79,18 @@ public class Ambiente {
                 tentarDispersarSemente(arvore);
             }
 
-            System.out.println(arvore);
-            System.out.println("----");
-            System.out.println("Arvore: " + arvore.hashCode());
-            System.out.println("Centro: (" + arvore.getCentro()[0] + ", " + arvore.getCentro()[1] + ")");
-            System.out.println("Raio e Diametro: " + (arvore.getDiametro() /2 ) + " " + arvore.getDiametro());
-            System.out.println("Menor espaço: " + menorEspaco);
-            System.out.println("----");
+//            System.out.println(arvore);
+//            System.out.println("----");
+//            System.out.println("Arvore: " + arvore.hashCode());
+//            System.out.println("Centro: (" + arvore.getCentro()[0] + ", " + arvore.getCentro()[1] + ")");
+//            System.out.println("Raio e Diametro: " + (arvore.getDiametro() /2 ) + " " + arvore.getDiametro());
+//            System.out.println("Menor espaço: " + menorEspaco);
+//            System.out.println("----");
         }
 
         arvores.removeAll(decompostas);
 
-        System.out.println("Recursos restantes: " + recurso);
+//        System.out.println("Recursos restantes: " + recurso);
 
         List<Arvore> novas = new ArrayList<>();
         List<Semente> remover = new ArrayList<>();

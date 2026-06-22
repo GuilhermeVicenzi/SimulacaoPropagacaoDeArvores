@@ -1,6 +1,14 @@
 package simulacao.simulador;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "estatisticas_iteracao")
 public class EstatisticasIteracao {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private int iteracao;
 
@@ -11,13 +19,21 @@ public class EstatisticasIteracao {
     private int quantidadeArvores;
     private int quantidadeSementes;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "simulador_id")
+    private Simulador simulador;
+
+    public EstatisticasIteracao() {
+    }
+
     public EstatisticasIteracao(
             int iteracao,
             double areaTotal,
             double areaOcupada,
             double areaLivre,
             int quantidadeArvores,
-            int quantidadeSementes) {
+            int quantidadeSementes,
+            Simulador simulador) {
 
         this.iteracao = iteracao;
         this.areaTotal = areaTotal;
@@ -25,6 +41,7 @@ public class EstatisticasIteracao {
         this.areaLivre = areaLivre;
         this.quantidadeArvores = quantidadeArvores;
         this.quantidadeSementes = quantidadeSementes;
+        this.simulador = simulador;
     }
 
     @Override

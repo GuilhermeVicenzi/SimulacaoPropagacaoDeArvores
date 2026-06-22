@@ -1,24 +1,52 @@
 package simulacao.simulador;
 
 import javax.swing.Timer;
+
+import jakarta.persistence.*;
 import simulacao.Visuais.Janela;
 import simulacao.Visuais.PainelGrafico;
 import simulacao.ambiente.Ambiente;
+import simulacao.persistencia.SimuladorRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "simulacao")
 public class Simulador {
-    Ambiente ambiente;
-    Janela janela;
-    PainelGrafico painelGrafico;
-    Simulacao simulacao;
+    @Transient
+    private Ambiente ambiente;
+    @Transient
+    private Janela janela;
+    @Transient
+    private PainelGrafico painelGrafico;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "simulacao_id")
+    private Simulacao simulacao;
 
     private int passoAtual = 0;
     private int maxPassos;
+
+    @Column(nullable = false)
     private String nome;
 
+    @OneToMany(
+            mappedBy = "simulador",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     private List<EstatisticasIteracao> historico;
+
+    @Transient
+    private SimuladorRepository repository =
+            new SimuladorRepository();
+
+    public Simulador() {};
 
     public Simulador(Ambiente ambiente, Simulacao simulacao, String nome) {
         this.ambiente = ambiente;
@@ -36,11 +64,12 @@ public class Simulador {
 
             if (passoAtual >= maxPassos) {
                 ((Timer)e.getSource()).stop();
-                mostrarEstatisticas();
+//                mostrarEstatisticas();
+                repository.salvar(this);
                 return;
             }
 
-            System.out.println("Passo " + (passoAtual + 1));
+//            System.out.println("Passo " + (passoAtual + 1));
 
             ambiente.simularPassos();
 
@@ -72,7 +101,8 @@ public class Simulador {
                         ambiente.getAreaUsada(),
                         ambiente.getAreaLivre(),
                         ambiente.getArvores().size(),
-                        ambiente.getSementes().size()
+                        ambiente.getSementes().size(),
+                        this
                 )
         );
     }

@@ -1,14 +1,30 @@
 package simulacao.simulador;
 
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
+@Entity
+@Table(name = "parametros")
 public class Simulacao {
-    private final double diametroMax;
-    private final double distanciaMin;
-    private final int idadeMax;
-    private final Random seed;
-    private final float recursoInicial;
-    private final int validadeSemente;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private double diametroMax;
+    private double distanciaMin;
+    private int idadeMax;
+    private Random seed;
+    private float recursoInicial;
+    private int validadeSemente;
+
+    @OneToMany(mappedBy = "simulacao")
+    private List<Simulador> simuladores = new ArrayList<Simulador>();
+
+    public Simulacao() {};
 
     public Simulacao(double diametroMax, double distanciaMin, int idadeMax, int seed, float recursoInicial, int validadeSemente) {
         this.diametroMax = diametroMax;
@@ -17,6 +33,10 @@ public class Simulacao {
         this.seed = new Random(seed);
         this.recursoInicial = recursoInicial;
         this.validadeSemente = validadeSemente;
+    }
+
+    public void adicionarSimulador(Simulador simulador) {
+        simuladores.add(simulador);
     }
 
     public double getDiametroMax() {
