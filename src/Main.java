@@ -25,7 +25,7 @@ public class Main {
             e.printStackTrace();
         }
 
-        Simulacao simulacao = simulacoes.get(0);
+        Simulacao simulacao = simulacoes.getFirst();
 
         Arvore arvoreBase = new Arvore(
                 0,
@@ -44,7 +44,7 @@ public class Main {
                         25,
                         15,
                         50,
-                        simulacao.getSeed(),
+                        simulacao.getRandom(),
                         arvoreBase
                 );
 
@@ -97,7 +97,7 @@ public class Main {
                         simulacao
                 );
 
-//
+
         Simulador simulador1 = new Simulador(ambiente1, simulacao, "Circulo");
         Simulador simulador2 = new Simulador(ambiente2, simulacao, "Grid");
         Simulador simulador3 = new Simulador(ambiente3, simulacao, "Espiral");

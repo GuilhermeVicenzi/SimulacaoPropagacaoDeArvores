@@ -74,7 +74,7 @@ public class Ambiente {
                 arvore.crescer(menorEspaco);
             }
 
-            Random r = simulacao.getSeed();
+            Random r = simulacao.getRandom();
             if (arvore.getIdade() >= 5 && r.nextDouble() < arvore.getDiametro() / simulacao.getDiametroMax() * 0.3) {
                 tentarDispersarSemente(arvore);
             }
@@ -113,7 +113,7 @@ public class Ambiente {
                 continue;
             }
 
-            if (semente.tentarGerminar(simulacao.getSeed())) {
+            if (semente.tentarGerminar(simulacao.getRandom())) {
                 novas.add(semente.germinar());
                 remover.add(semente);
 //                System.out.println("Uma semente germinou, uma nova arvore comecará a crescer.");
@@ -160,7 +160,7 @@ public class Ambiente {
 
     public void tentarDispersarSemente(Arvore mae) {
 
-        Random r = simulacao.getSeed();
+        Random r = simulacao.getRandom();
         int maxTentativas = 5;
         double alcanceMaximo = 25;
         float custo = 0.5F;

@@ -17,22 +17,32 @@ public class Simulacao {
     private double diametroMax;
     private double distanciaMin;
     private int idadeMax;
-    private Random seed;
+    private int seed;
     private float recursoInicial;
     private int validadeSemente;
 
+    @Transient
+    private Random random;
+
     @OneToMany(mappedBy = "simulacao")
-    private List<Simulador> simuladores = new ArrayList<Simulador>();
+    private List<Simulador> simuladores = new ArrayList<>();
 
-    public Simulacao() {};
+    public Simulacao() {}
 
-    public Simulacao(double diametroMax, double distanciaMin, int idadeMax, int seed, float recursoInicial, int validadeSemente) {
+    public Simulacao(double diametroMax, double distanciaMin, int idadeMax, int seed,
+                     float recursoInicial, int validadeSemente) {
         this.diametroMax = diametroMax;
         this.distanciaMin = distanciaMin;
         this.idadeMax = idadeMax;
-        this.seed = new Random(seed);
+        this.seed = seed;
+        this.random = new Random(seed);
         this.recursoInicial = recursoInicial;
         this.validadeSemente = validadeSemente;
+    }
+
+    @PostLoad
+    private void inicializarRandom() {
+        random = new Random(seed);
     }
 
     public void adicionarSimulador(Simulador simulador) {
@@ -51,8 +61,15 @@ public class Simulacao {
         return idadeMax;
     }
 
-    public Random getSeed() {
+    public int getSeed() {
         return seed;
+    }
+
+    public Random getRandom() {
+        if (random == null) {
+            random = new Random(seed);
+        }
+        return random;
     }
 
     public float getRecursoInicial() {
